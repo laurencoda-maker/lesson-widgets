@@ -196,12 +196,45 @@
     grid.appendChild(card);
   });
 
+  function fallbackCopy(text) {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.top = '-9999px';
+    ta.style.left = '-9999px';
+    document.body.appendChild(ta);
+    ta.focus();
+    ta.select();
+    let ok = false;
+    try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+    document.body.removeChild(ta);
+    return ok;
+  }
+
+  function copyText(text) {
+    if (navigator.clipboard && window.isSecureContext) {
+      return navigator.clipboard.writeText(text).catch(() => {
+        if (!fallbackCopy(text)) throw new Error('copy failed');
+      });
+    }
+    return new Promise((resolve, reject) => {
+      if (fallbackCopy(text)) resolve(); else reject(new Error('copy failed'));
+    });
+  }
+
   copyBtn.addEventListener('click', () => {
     if (!lastChoice) return;
     const text = `${lastChoice.title} (${lastChoice.titleEn})`;
-    navigator.clipboard.writeText(text).then(() => {
+    copyText(text).then(() => {
       copyBtn.textContent = 'Copié ✓';
       copyBtn.classList.add('copied');
+      setTimeout(() => {
+        copyBtn.textContent = 'Copier';
+        copyBtn.classList.remove('copied');
+      }, 2000);
+    }).catch(() => {
+      copyBtn.textContent = 'Copie impossible';
+      setTimeout(() => { copyBtn.textContent = 'Copier'; }, 2000);
     });
   });
 </script>
