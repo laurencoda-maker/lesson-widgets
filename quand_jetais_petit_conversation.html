@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Quand j'étais petit(e)</title>
+<style>
+  :root{
+    --cream:#fdf8f0;
+    --card:#ffffff;
+    --turquoise:#1fb8ac;
+    --turquoise-dark:#128f85;
+    --orange:#e07a3f;
+    --orange-light:#f4a26a;
+    --yellow:#f7c948;
+    --ink:#3a3128;
+    --ink-soft:#7a6f63;
+    --shadow: 0 4px 14px rgba(58,49,40,0.08);
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:var(--cream);
+    color:var(--ink);
+    padding:28px 20px 60px;
+  }
+  .wrap{max-width:1100px;margin:0 auto;}
+  header{text-align:center;margin-bottom:28px;}
+  .icon-badge{
+    display:inline-flex;align-items:center;justify-content:center;
+    width:48px;height:48px;border-radius:50%;
+    background:var(--yellow);
+    font-size:24px;margin-bottom:8px;
+  }
+  h1{
+    font-size:2.1rem;margin:4px 0 10px;font-weight:800;
+  }
+  h1 span{color:var(--orange);}
+  .subtitle{
+    display:inline-block;
+    background:var(--card);
+    border:2px solid var(--turquoise);
+    color:var(--turquoise-dark);
+    padding:8px 20px;border-radius:999px;
+    font-weight:600;font-size:1rem;
+  }
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(5,1fr);
+    gap:14px;
+    margin-top:26px;
+  }
+  @media (max-width:900px){ .grid{grid-template-columns:repeat(4,1fr);} }
+  @media (max-width:600px){ .grid{grid-template-columns:repeat(3,1fr);} }
+  .card{
+    background:var(--card);
+    border-radius:16px;
+    padding:10px;
+    text-align:center;
+    cursor:pointer;
+    border:2px solid transparent;
+    box-shadow:var(--shadow);
+    transition:transform .15s ease, border-color .15s ease, box-shadow .15s ease;
+    position:relative;
+  }
+  .card:hover{
+    transform:translateY(-4px) scale(1.03);
+    border-color:var(--turquoise);
+    box-shadow:0 10px 20px rgba(31,184,172,0.18);
+  }
+  .card:active{transform:translateY(-1px) scale(0.99);}
+  .card img{
+    width:100%;aspect-ratio:1/1;object-fit:cover;
+    border-radius:10px;display:block;margin-bottom:8px;
+    background:var(--cream);
+  }
+  .card .cap{font-size:0.82rem;font-weight:600;line-height:1.25;}
+  .badge{
+    position:absolute;top:6px;left:6px;
+    width:22px;height:22px;border-radius:50%;
+    background:var(--orange);color:#fff;font-size:0.72rem;font-weight:800;
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:0 2px 4px rgba(0,0,0,0.15);
+  }
+  .talk-hint{
+    position:absolute;bottom:6px;right:6px;
+    background:var(--turquoise);color:#fff;
+    width:20px;height:20px;border-radius:50%;
+    font-size:0.7rem;display:flex;align-items:center;justify-content:center;
+    opacity:0;transition:opacity .15s ease;
+  }
+  .card:hover .talk-hint{opacity:1;}
+
+  .overlay{
+    position:fixed;inset:0;
+    background:rgba(58,49,40,0.45);
+    display:none;align-items:center;justify-content:center;
+    padding:20px;z-index:50;
+  }
+  .overlay.show{display:flex;}
+  .modal{
+    background:var(--card);
+    border-radius:22px;
+    max-width:480px;width:100%;
+    padding:26px 26px 22px;
+    box-shadow:0 20px 50px rgba(0,0,0,0.25);
+    position:relative;
+    animation:pop .18s ease;
+  }
+  @keyframes pop{from{transform:scale(0.92);opacity:0;}to{transform:scale(1);opacity:1;}}
+  .modal .close{
+    position:absolute;top:14px;right:14px;
+    background:var(--cream);border:none;
+    width:32px;height:32px;border-radius:50%;
+    font-size:1rem;cursor:pointer;color:var(--ink-soft);
+  }
+  .modal .close:hover{background:var(--yellow);color:var(--ink);}
+  .modal-head{display:flex;align-items:center;gap:14px;margin-bottom:16px;}
+  .modal-head img{width:76px;height:76px;object-fit:cover;border-radius:14px;background:var(--cream);}
+  .modal-head .cap{font-size:1.15rem;font-weight:800;}
+  .qlist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px;}
+  .qlist li{
+    background:var(--cream);
+    border-left:4px solid var(--lvl-color, var(--turquoise));
+    padding:10px 14px 10px 14px;border-radius:10px;
+    font-size:0.96rem;
+    display:flex;gap:10px;align-items:baseline;
+  }
+  .qlist li .lvl{
+    flex:0 0 auto;
+    font-size:0.68rem;font-weight:800;letter-spacing:.03em;
+    color:#fff;background:var(--lvl-color, var(--turquoise));
+    padding:2px 7px;border-radius:999px;
+  }
+  .qlist li[data-level="A1"]{--lvl-color:#3fb87f;}
+  .qlist li[data-level="A2"]{--lvl-color:#f0a63a;}
+  .qlist li[data-level="B1"]{--lvl-color:#3a8ee0;}
+  .qlist li[data-level="B2"]{--lvl-color:#d1568a;}
+  .qlist li .qtext{flex:1;}
+  .qlist li .reroll{
+    flex:0 0 auto;
+    background:none;border:none;cursor:pointer;
+    font-size:1rem;line-height:1;opacity:0.5;
+    padding:4px;border-radius:8px;
+    transition:opacity .15s ease, transform .2s ease, background .15s ease;
+  }
+  .qlist li .reroll:hover{opacity:1;transform:rotate(18deg);background:rgba(31,184,172,0.14);}
+  .reroll-all{
+    display:flex;align-items:center;gap:6px;margin:0 0 12px auto;
+    background:var(--cream);border:none;color:var(--turquoise-dark);
+    font-weight:700;font-size:0.8rem;padding:6px 12px;border-radius:999px;
+    cursor:pointer;transition:background .15s ease, color .15s ease;
+  }
+  .reroll-all:hover{background:var(--turquoise);color:#fff;}
+  .astuce{
+    margin-top:22px;text-align:center;
+    color:var(--orange);font-weight:700;font-size:0.9rem;
+  }
+  .fs-btn{
+    position:fixed;top:14px;right:14px;z-index:40;
+    display:flex;align-items:center;gap:6px;
+    background:var(--card);border:2px solid var(--turquoise);color:var(--turquoise-dark);
+    padding:8px 14px;border-radius:999px;font-weight:700;font-size:0.85rem;
+    cursor:pointer;box-shadow:var(--shadow);
+  }
+  .fs-btn:hover{background:var(--turquoise);color:#fff;}
+</style>
+</head>
+<body>
+<button class="fs-btn" id="fsBtn">⛶ Plein écran</button>
+<div class="wrap">
+  <header>
+    <div class="icon-badge">🧸</div>
+    <h1>Quand j'étais <span>petit(e)</span></h1>
+    <div class="subtitle">« Comment était ta vie quand tu étais enfant ? »</div>
+  </header>
+  <div class="grid" id="grid"></div>
+  <div class="astuce">💡 Clique sur une image pour faire parler l'élève !</div>
+</div>
+
+<div class="overlay" id="overlay">
+  <div class="modal">
+    <button class="close" id="closeBtn">✕</button>
+    <div class="modal-head">
+      <img id="modalImg" src="" alt="">
+      <div class="cap" id="modalCap"></div>
+    </div>
+    <button class="reroll-all" id="rerollAll">🎲 Nouvelles questions</button>
+    <ul class="qlist" id="modalQ"></ul>
+  </div>
+</div>
+
+<script>
+function iconImg(emoji, bg){
+  const svg = `<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><rect width='200' height='200' rx='28' fill='${bg}'/><text x='100' y='120' font-size='96' text-anchor='middle' dominant-baseline='middle'>${emoji}</text></svg>`;
+  return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
+}
+const C1 = '#fdf0dd', C2 = '#fff3c4', C3 = '#d7f0ec', C4 = '#fbdde7', C5 = '#dbe8fb';
+
+const ITEMS = [
+{"caption":"J'habitais à la campagne.","img":iconImg('🌾',C1),"levels":{
+  "A1":["Où habitais-tu quand tu étais petit(e) ?","Aimais-tu ta maison d'enfance ?","Habitais-tu loin de l'école ?","Avais-tu un jardin ?","Habitais-tu avec toute ta famille ?"],
+  "A2":["Comment était ta maison à cette époque ?","Qu'est-ce que tu aimais dans ton quartier ?","Avec qui habitais-tu ?","Qu'est-ce qu'il y avait près de chez toi ?","As-tu déménagé souvent quand tu étais enfant ?"],
+  "B1":["Décris la maison où tu habitais enfant.","Raconte un souvenir lié à cet endroit.","Explique ce que tu aimais ou n'aimais pas dans ce lieu.","Comment était la vie dans ce quartier à l'époque ?","Qu'est-ce qui a changé depuis ?"],
+  "B2":["Penses-tu que l'endroit où on grandit nous marque pour toujours ?","Comment l'environnement d'enfance influence-t-il la personnalité ?","Préfères-tu avoir grandi en ville ou à la campagne ?","La nostalgie du lieu d'enfance est-elle universelle ?","Retournerais-tu vivre dans ta ville natale ?"]
+}},
+{"caption":"Je jouais dehors tous les jours.","img":iconImg('🌳',C2),"levels":{
+  "A1":["Jouais-tu souvent dehors ?","À quoi jouais-tu ?","Avec qui jouais-tu ?","Aimais-tu jouer dehors ?","Jusqu'à quelle heure jouais-tu ?"],
+  "A2":["Où jouais-tu exactement ?","Quel était ton jeu préféré ?","Avec quels amis jouais-tu ?","Qu'est-ce que tu faisais les jours de pluie ?","Tes parents te laissaient jouer seul(e) dehors ?"],
+  "B1":["Décris une journée typique en jouant dehors.","Raconte ton meilleur souvenir de jeu d'enfance.","Explique pourquoi tu aimais tant jouer dehors.","Comment les jeux ont-ils changé depuis ton enfance ?","Quels jeux inventiez-vous avec tes amis ?"],
+  "B2":["Penses-tu que les enfants jouent moins dehors aujourd'hui ?","Comment les écrans ont-ils changé l'enfance ?","Le jeu libre est-il important pour le développement ?","Faut-il plus d'espaces verts pour les enfants en ville ?","Que dirais-tu aux parents d'aujourd'hui sur le jeu dehors ?"]
+}},
+{"caption":"J'allais à l'école à pied.","img":iconImg('🚶',C3),"levels":{
+  "A1":["Comment allais-tu à l'école ?","Habitais-tu loin de l'école ?","Aimais-tu le trajet vers l'école ?","Marchais-tu seul(e) ou accompagné(e) ?","Combien de temps prenait le trajet ?"],
+  "A2":["Avec qui faisais-tu le trajet ?","Que faisiez-vous en chemin ?","Le trajet était-il différent en hiver ?","Quel chemin prenais-tu pour aller à l'école ?","T'arrêtais-tu quelque part en chemin ?"],
+  "B1":["Décris le trajet que tu faisais chaque matin.","Raconte une anecdote qui s'est passée sur ce chemin.","Explique ce que tu ressentais en allant à l'école.","Comment le trajet a-t-il changé au fil des années ?","Qu'est-ce que tu observais en chemin ?"],
+  "B2":["Penses-tu que marcher le matin est bénéfique pour les enfants ?","Comment les modes de transport scolaire ont-ils évolué ?","La sécurité des enfants dans la rue s'est-elle améliorée ?","Faut-il encourager plus les trajets à pied aujourd'hui ?","Quel rôle joue l'indépendance dans le développement d'un enfant ?"]
+}},
+{"caption":"Je regardais des dessins animés.","img":iconImg('📺',C4),"levels":{
+  "A1":["Regardais-tu des dessins animés ?","Quel était ton dessin animé préféré ?","Quand les regardais-tu ?","Avec qui les regardais-tu ?","Combien de temps regardais-tu la télévision ?"],
+  "A2":["Quel personnage préférais-tu ?","À quelle heure les regardais-tu ?","Que faisais-tu après avoir regardé la télévision ?","Tes parents limitaient-ils ce temps ?","Quelle chaîne regardais-tu le plus ?"],
+  "B1":["Décris ton dessin animé préféré et pourquoi tu l'aimais.","Raconte un souvenir lié à un dessin animé.","Explique ce que ces dessins animés t'ont appris.","Comment ton rapport à la télévision a-t-il changé ?","Quels personnages t'ont marqué(e) ?"],
+  "B2":["Penses-tu que les dessins animés influencent les enfants ?","Comment le contenu pour enfants a-t-il évolué ?","Les écrans sont-ils plus problématiques aujourd'hui qu'avant ?","Quel est le rôle des parents dans le choix des programmes ?","La nostalgie des dessins animés d'enfance est-elle importante ?"]
+}},
+{"caption":"Je mangeais souvent des bonbons.","img":iconImg('🍬',C5),"levels":{
+  "A1":["Aimais-tu les bonbons ?","Quel bonbon préférais-tu ?","Mangeais-tu souvent des sucreries ?","Où achetais-tu des bonbons ?","Tes parents te limitaient les bonbons ?"],
+  "A2":["Où achetais-tu tes bonbons préférés ?","Avec qui partageais-tu des bonbons ?","Combien d'argent de poche recevais-tu pour ça ?","Quel était le magasin de bonbons de ton enfance ?","Échangeais-tu des bonbons avec tes amis ?"],
+  "B1":["Décris ton bonbon préféré et son goût.","Raconte un souvenir lié aux bonbons de ton enfance.","Explique pourquoi les sucreries étaient si spéciales.","Comment ton rapport au sucre a-t-il changé depuis ?","Quelle friandise n'existe plus aujourd'hui selon toi ?"],
+  "B2":["Penses-tu que les enfants mangent trop de sucre aujourd'hui ?","Comment l'industrie alimentaire cible-t-elle les enfants ?","Faut-il réglementer davantage la publicité pour les bonbons ?","Le goût sucré de l'enfance influence-t-il les habitudes adultes ?","Que penses-tu de l'évolution des sucreries au fil du temps ?"]
+}},
+{"caption":"Je n'aimais pas les légumes.","img":iconImg('🥦',C1),"levels":{
+  "A1":["Aimais-tu les légumes enfant ?","Quel légume détestais-tu le plus ?","Mangeais-tu tous tes légumes ?","Tes parents t'obligeaient à en manger ?","Aimes-tu les légumes maintenant ?"],
+  "A2":["Comment cachais-tu les légumes que tu n'aimais pas ?","Quel légume as-tu appris à aimer plus tard ?","Que te disaient tes parents pour te convaincre ?","Y avait-il un légume que tu détestais vraiment ?","Comment ta mère/ton père préparait-il/elle les légumes ?"],
+  "B1":["Raconte une bataille typique autour des légumes à table.","Explique pourquoi tu n'aimais pas certains légumes.","Décris comment tes goûts ont évolué avec le temps.","Quelle stratégie utilisaient tes parents pour te faire manger sainement ?","Qu'est-ce qui t'a fait changer d'avis sur les légumes ?"],
+  "B2":["Penses-tu que les goûts d'enfance déterminent les habitudes adultes ?","Comment encourager les enfants à manger sainement aujourd'hui ?","L'éducation alimentaire est-elle suffisante à l'école ?","Le rapport à la nourriture a-t-il changé entre générations ?","Faut-il forcer les enfants à goûter de tout ?"]
+}},
+{"caption":"J'avais peur du noir.","img":iconImg('🌙',C2),"levels":{
+  "A1":["Avais-tu peur du noir ?","Dormais-tu avec une lumière allumée ?","De quoi avais-tu peur exactement ?","Qui te rassurait quand tu avais peur ?","As-tu encore peur du noir ?"],
+  "A2":["Comment tes parents te rassuraient-ils ?","Avais-tu une veilleuse dans ta chambre ?","Que faisais-tu quand tu avais peur la nuit ?","Y avait-il un monstre imaginaire précis ?","Comment as-tu surmonté cette peur ?"],
+  "B1":["Décris ce que tu ressentais quand tu avais peur du noir.","Raconte une nuit où cette peur était particulièrement forte.","Explique comment cette peur a disparu avec le temps.","Quelles autres peurs avais-tu enfant ?","Comment tes parents géraient-ils tes peurs ?"],
+  "B2":["Penses-tu que les peurs d'enfance sont universelles ?","Quel est le rôle de l'imagination dans les peurs enfantines ?","Comment aider un enfant à surmonter ses peurs aujourd'hui ?","Les peurs d'enfance influencent-elles la personnalité adulte ?","Que penses-tu de l'utilité psychologique de la peur ?"]
+}},
+{"caption":"Je dormais avec une peluche.","img":iconImg('🧸',C3),"levels":{
+  "A1":["Avais-tu une peluche préférée ?","Comment s'appelait-elle ?","Dormais-tu toujours avec elle ?","L'emmenais-tu en voyage ?","As-tu encore cette peluche ?"],
+  "A2":["Qui t'a offert cette peluche ?","Que faisait-elle de spécial pour toi ?","L'emmenais-tu partout avec toi ?","As-tu perdu cette peluche un jour ?","Quelle autre peluche aimais-tu ?"],
+  "B1":["Décris ta peluche préférée en détail.","Raconte une histoire liée à cette peluche.","Explique pourquoi cet objet était si important pour toi.","Qu'est devenue cette peluche aujourd'hui ?","Comment t'es-tu séparé(e) de cet objet en grandissant ?"],
+  "B2":["Penses-tu que les objets transitionnels sont importants pour les enfants ?","Pourquoi les enfants s'attachent-ils autant à un objet ?","Quel rôle jouent les doudous dans le développement émotionnel ?","Garde-t-on toujours un lien avec les objets d'enfance ?","Que représente la nostalgie d'un objet d'enfance ?"]
+}},
+{"caption":"Mes parents me lisaient des histoires.","img":iconImg('📖',C4),"levels":{
+  "A1":["Tes parents te lisaient des histoires ?","Quel livre préférais-tu ?","Qui te lisait des histoires ?","Aimais-tu ce moment de la journée ?","À quel moment te lisait-on des histoires ?"],
+  "A2":["Quelle histoire demandais-tu souvent ?","Comment était ce moment avec tes parents ?","As-tu appris à lire grâce à ces histoires ?","Quel personnage de livre préférais-tu ?","Où te lisait-on ces histoires ?"],
+  "B1":["Décris ce moment de lecture avant de dormir.","Raconte ton livre d'enfance préféré et pourquoi.","Explique ce que la lecture représentait pour toi enfant.","Comment ce moment a-t-il influencé ton amour des livres ?","Quelle histoire te faisait le plus rêver ?"],
+  "B2":["Penses-tu que la lecture aux enfants est essentielle ?","Comment les histoires façonnent-elles l'imagination des enfants ?","Les écrans remplacent-ils trop souvent la lecture aujourd'hui ?","Quel est le rôle des contes dans l'éducation des valeurs ?","Liras-tu (ou lis-tu) des histoires à tes propres enfants ?"]
+}},
+{"caption":"Je faisais du vélo avec mes amis.","img":iconImg('🚲',C5),"levels":{
+  "A1":["Faisais-tu du vélo enfant ?","Avec qui faisais-tu du vélo ?","Où faisiez-vous du vélo ?","Avais-tu un vélo préféré ?","Aimais-tu faire du vélo ?"],
+  "A2":["Où alliez-vous à vélo ?","Quel genre d'aventures viviez-vous ?","Faisiez-vous des courses de vélo ?","Ton vélo avait-il une couleur ou un style particulier ?","Est-ce que tu es déjà tombé(e) de vélo ?"],
+  "B1":["Décris une sortie à vélo typique avec tes amis.","Raconte un souvenir marquant lié au vélo.","Explique ce que représentait la liberté du vélo pour toi.","Comment as-tu appris à faire du vélo ?","Quels endroits exploriez-vous à vélo ?"],
+  "B2":["Penses-tu que le vélo apporte un sentiment de liberté aux enfants ?","Comment la mobilité des enfants a-t-elle changé depuis ton enfance ?","Les enfants ont-ils moins d'autonomie aujourd'hui ?","Faut-il encourager davantage le vélo en ville ?","Quel rôle joue l'activité physique dans le développement de l'enfant ?"]
+}},
+{"caption":"J'écoutais de la musique tout le temps.","img":iconImg('🎧',C1),"levels":{
+  "A1":["Écoutais-tu beaucoup de musique enfant ?","Quel était ton chanteur ou groupe préféré ?","Comment écoutais-tu de la musique ?","Chantais-tu tes chansons préférées ?","Dansais-tu sur la musique ?"],
+  "A2":["Quelle chanson connaissais-tu par cœur ?","Sur quel appareil écoutais-tu de la musique ?","Qui t'a fait découvrir tes chansons préférées ?","Avais-tu un CD ou une cassette préférée ?","Chantais-tu dans la voiture avec ta famille ?"],
+  "B1":["Décris la musique que tu écoutais enfant.","Raconte un souvenir lié à une chanson de ton enfance.","Explique pourquoi cette musique était importante pour toi.","Comment tes goûts musicaux ont-ils évolué depuis ?","Quelle chanson te ramène instantanément en enfance ?"],
+  "B2":["Penses-tu que la musique d'enfance marque pour toujours ?","Comment la technologie a-t-elle changé l'accès à la musique ?","Quel rôle joue la nostalgie musicale dans nos souvenirs ?","La musique influence-t-elle le développement émotionnel des enfants ?","Que penses-tu de la musique que les enfants écoutent aujourd'hui ?"]
+}},
+{"caption":"On passait les vacances chez mes grands-parents.","img":iconImg('👵',C2),"levels":{
+  "A1":["Allais-tu souvent chez tes grands-parents ?","Aimais-tu ces visites ?","Où habitaient tes grands-parents ?","Que faisiez-vous ensemble ?","Combien de temps y restais-tu ?"],
+  "A2":["Que cuisinait ta grand-mère ou ton grand-père ?","Quel était ton jeu préféré chez eux ?","Quelle histoire te racontaient-ils ?","Y avait-il des cousins avec toi ?","Qu'est-ce que tu aimais le plus chez eux ?"],
+  "B1":["Décris une journée typique chez tes grands-parents.","Raconte ton souvenir préféré avec eux.","Explique ce que cette relation représentait pour toi.","Comment cette maison était-elle différente de la tienne ?","Quelle tradition familiale existait chez eux ?"],
+  "B2":["Penses-tu que les grands-parents jouent un rôle essentiel dans l'éducation ?","Comment les liens intergénérationnels ont-ils évolué ?","Quel est l'impact de la distance sur les relations familiales aujourd'hui ?","Les traditions familiales se perdent-elles avec le temps ?","Que transmettent les grands-parents que les parents ne peuvent pas ?"]
+}},
+{"caption":"Je rêvais de devenir astronaute.","img":iconImg('🚀',C3),"levels":{
+  "A1":["Que voulais-tu devenir enfant ?","Pourquoi voulais-tu faire ce métier ?","As-tu toujours voulu faire ça ?","Qui t'a inspiré ce rêve ?","Rêves-tu encore de ce métier ?"],
+  "A2":["Comment imaginais-tu ce métier étant enfant ?","Qu'est-ce qui t'attirait dans ce rêve ?","As-tu changé d'avis en grandissant ?","Qu'est-ce que tu faisais pour te préparer (jeux, déguisements) ?","Quel métier fais-tu réellement aujourd'hui ?"],
+  "B1":["Décris comment tu imaginais ta vie dans ce métier.","Raconte pourquoi ce rêve était si important pour toi enfant.","Explique ce qui a changé entre ce rêve et ta réalité actuelle.","Comment ce rêve a-t-il évolué avec le temps ?","Qu'est-ce qui aurait pu réaliser ce rêve ?"],
+  "B2":["Penses-tu que les rêves d'enfant influencent le futur ?","Pourquoi perdons-nous souvent ces rêves en grandissant ?","Faut-il encourager les enfants à garder leurs grands rêves ?","Quel est le rôle de l'imagination dans l'ambition future ?","Regrettes-tu de ne pas avoir suivi ce rêve d'enfance ?"]
+}},
+{"caption":"J'étais très timide.","img":iconImg('🙈',C4),"levels":{
+  "A1":["Étais-tu timide enfant ?","Dans quelles situations étais-tu timide ?","Es-tu toujours timide aujourd'hui ?","Qu'est-ce qui te rendait timide ?","Qui te mettait à l'aise ?"],
+  "A2":["Comment ta timidité se manifestait-elle ?","Dans quelles situations avais-tu le plus de mal ?","Qui t'aidait à surmonter ta timidité ?","As-tu un souvenir précis lié à ta timidité ?","Comment les autres enfants réagissaient-ils ?"],
+  "B1":["Décris une situation où ta timidité était forte.","Raconte comment tu as commencé à surmonter cette timidité.","Explique ce qui causait ta timidité selon toi.","Comment ta personnalité a-t-elle évolué depuis ?","Quel conseil donnerais-tu à un enfant timide ?"],
+  "B2":["Penses-tu que la timidité est innée ou acquise ?","Comment la société perçoit-elle les personnes timides ?","La timidité est-elle un désavantage aujourd'hui ?","Quel est le rôle de l'école dans le développement de la confiance ?","Comment aider un enfant timide à s'épanouir ?"]
+}},
+{"caption":"Je me disputais souvent avec mon frère/ma sœur.","img":iconImg('😤',C5),"levels":{
+  "A1":["As-tu des frères et sœurs ?","Te disputais-tu souvent avec eux ?","À propos de quoi vous disputiez-vous ?","Qui gagnait généralement ?","Vous entendez-vous bien maintenant ?"],
+  "A2":["Quelle était votre dispute la plus fréquente ?","Comment vos parents réagissaient-ils ?","Partagiez-vous une chambre ?","Qu'est-ce qui déclenchait vos disputes ?","Comment faisiez-vous la paix ?"],
+  "B1":["Raconte une dispute mémorable avec ton frère ou ta sœur.","Décris votre relation pendant l'enfance.","Explique comment cette relation a évolué en grandissant.","Quel rôle jouait la jalousie dans vos disputes ?","Comment vos parents géraient-ils les conflits ?"],
+  "B2":["Penses-tu que les disputes entre frères et sœurs sont normales et saines ?","Quel est le rôle de la fratrie dans le développement social ?","Comment gérer les conflits entre enfants sans favoritisme ?","Les relations fraternelles influencent-elles les amitiés futures ?","La rivalité fraternelle a-t-elle des bénéfices ?"]
+}},
+{"caption":"Je collectionnais des cartes ou des objets.","img":iconImg('🗂️',C1),"levels":{
+  "A1":["Collectionnais-tu quelque chose enfant ?","Qu'est-ce que tu collectionnais ?","Combien en avais-tu ?","Où gardais-tu ta collection ?","As-tu encore cette collection ?"],
+  "A2":["Comment as-tu commencé cette collection ?","Échangeais-tu avec tes amis ?","Quel était ton objet le plus précieux ?","Où achetais-tu ces objets ?","Combien d'argent y consacrais-tu ?"],
+  "B1":["Décris ta collection en détail.","Raconte comment tu l'as constituée au fil du temps.","Explique pourquoi cette collection était importante pour toi.","Qu'est-ce que tu ressentais en trouvant une pièce rare ?","Qu'est devenue cette collection aujourd'hui ?"],
+  "B2":["Penses-tu que collectionner développe certaines compétences chez les enfants ?","Pourquoi les enfants aiment-ils tant collectionner des objets ?","Le marché des objets de collection a-t-il changé avec le numérique ?","Collectionner est-il un passe-temps qui se perd avec l'âge ?","Quel est le lien entre collection et identité personnelle ?"]
+}},
+{"caption":"On n'avait pas de téléphone portable.","img":iconImg('☎️',C2),"levels":{
+  "A1":["Avais-tu un téléphone portable enfant ?","Comment restais-tu en contact avec tes amis ?","Utilisais-tu le téléphone fixe de la maison ?","À quel âge as-tu eu ton premier portable ?","Cela te manquait-il ?"],
+  "A2":["Comment organisiez-vous vos rencontres sans portable ?","Qu'utilisais-tu pour appeler tes amis ?","Comment communiquiez-vous avec la famille éloignée ?","Quel était ton moyen de communication préféré ?","As-tu écrit des lettres étant enfant ?"],
+  "B1":["Décris comment tu communiquais avec tes amis sans portable.","Raconte comment vous organisiez vos sorties sans message instantané.","Explique les avantages et inconvénients de vivre sans portable enfant.","Comment la communication a-t-elle changé depuis ton enfance ?","Qu'est-ce qui te manque de cette époque sans portable ?"],
+  "B2":["Penses-tu que les enfants d'aujourd'hui ont trop tôt un téléphone ?","Comment les technologies ont-elles changé les relations sociales ?","La vie sans portable était-elle plus simple selon toi ?","Quel est l'impact des écrans sur la communication familiale ?","À quel âge un enfant devrait-il avoir son premier téléphone ?"]
+}},
+{"caption":"Je détestais me lever tôt pour l'école.","img":iconImg('⏰',C3),"levels":{
+  "A1":["Aimais-tu te lever tôt pour l'école ?","À quelle heure te levais-tu ?","Qui te réveillait le matin ?","Étais-tu grognon le matin ?","Prenais-tu le temps de petit-déjeuner ?"],
+  "A2":["Comment se passait ton réveil chaque matin ?","Que faisais-tu pour te préparer plus vite ?","Quel était le pire jour pour se lever tôt ?","Combien de fois appuyais-tu sur le réveil ?","Qu'est-ce qui te motivait à te lever ?"],
+  "B1":["Décris ta routine du matin pour aller à l'école.","Raconte un matin particulièrement difficile.","Explique pourquoi tu détestais tant te lever tôt.","Comment ta routine matinale a-t-elle changé aujourd'hui ?","Qu'est-ce qui t'aidait à te lever de meilleure humeur ?"],
+  "B2":["Penses-tu que les horaires scolaires devraient commencer plus tard ?","Comment le manque de sommeil affecte-t-il les enfants à l'école ?","Quel est le rythme biologique idéal pour les adolescents ?","Faut-il repenser les horaires scolaires selon la science du sommeil ?","Comment concilier vie de famille et horaires matinaux ?"]
+}},
+{"caption":"J'adorais les week-ends chez mes cousins.","img":iconImg('🎉',C4),"levels":{
+  "A1":["Avais-tu des cousins proches ?","Alliez-vous souvent les uns chez les autres ?","Que faisiez-vous ensemble ?","Aimais-tu ces week-ends ?","Combien de cousins avais-tu ?"],
+  "A2":["Quel jeu préfériez-vous jouer ensemble ?","Où passiez-vous ces week-ends ?","Qu'est-ce qui rendait ces moments spéciaux ?","Vous disputiez-vous parfois ?","Quel souvenir précis gardes-tu de ces week-ends ?"],
+  "B1":["Décris un week-end typique passé avec tes cousins.","Raconte votre aventure la plus mémorable ensemble.","Explique pourquoi ces moments étaient si importants.","Comment votre relation a-t-elle évolué en grandissant ?","Que représentait la famille élargie pour toi enfant ?"],
+  "B2":["Penses-tu que les liens avec les cousins sont importants dans le développement social ?","Comment les familles élargies se retrouvent-elles moins aujourd'hui ?","Quel rôle jouent les réunions familiales dans la construction de l'identité ?","La distance géographique affaiblit-elle nécessairement les liens familiaux ?","Comment recréer ces moments de complicité familiale à l'âge adulte ?"]
+}},
+{"caption":"La vie était plus simple avant.","img":iconImg('🕰️',C5),"levels":{
+  "A1":["Penses-tu que ta vie était plus simple enfant ?","Qu'est-ce qui te semblait plus simple avant ?","As-tu moins de responsabilités enfant ?","Préfères-tu la vie d'enfant ou d'adulte ?","Qu'est-ce qui te manque de cette époque ?"],
+  "A2":["Quelle partie de ton enfance te manque le plus ?","Qu'est-ce qui a rendu ta vie plus compliquée en grandissant ?","Quelles responsabilités n'avais-tu pas enfant ?","Comment décrirais-tu cette simplicité d'avant ?","Aimerais-tu revenir à cette époque ?"],
+  "B1":["Explique pourquoi tu penses que la vie était plus simple avant.","Raconte ce qui a changé entre ton enfance et maintenant.","Décris ce que représentait l'insouciance de l'enfance pour toi.","Comment gères-tu la complexité de la vie adulte aujourd'hui ?","Quelle leçon de cette simplicité gardes-tu aujourd'hui ?"],
+  "B2":["Penses-tu que la nostalgie idéalise toujours le passé ?","La vie était-elle vraiment plus simple, ou est-ce une illusion ?","Comment la société a-t-elle rendu la vie plus complexe avec le temps ?","Quel est le rôle de la nostalgie dans notre bien-être ?","Comment retrouver un peu de cette simplicité aujourd'hui ?"]
+}}
+];
+
+const grid = document.getElementById('grid');
+ITEMS.forEach((item, i) => {
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.innerHTML = `
+    <span class="badge">${i+1}</span>
+    <span class="talk-hint">💬</span>
+    <img src="${item.img}" alt="${item.caption}">
+    <div class="cap">${item.caption}</div>
+  `;
+  card.addEventListener('click', () => openModal(item));
+  grid.appendChild(card);
+});
+
+const overlay = document.getElementById('overlay');
+const modalImg = document.getElementById('modalImg');
+const modalCap = document.getElementById('modalCap');
+const modalQ = document.getElementById('modalQ');
+
+const rerollAllBtn = document.getElementById('rerollAll');
+const LEVELS = ['A1','A2','B1','B2'];
+let currentItem = null;
+function pickRandom(arr){ return Array.isArray(arr) ? arr[Math.floor(Math.random()*arr.length)] : arr; }
+function renderQuestions(){
+  modalQ.innerHTML = LEVELS.map(lv => `
+    <li data-level="${lv}">
+      <span class="lvl">${lv}</span>
+      <span class="qtext">${pickRandom(currentItem.levels[lv])}</span>
+      <button class="reroll" data-lv="${lv}" title="Une autre question">🎲</button>
+    </li>`).join('');
+  modalQ.querySelectorAll('.reroll').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const lv = btn.dataset.lv;
+      btn.previousElementSibling.textContent = pickRandom(currentItem.levels[lv]);
+    });
+  });
+}
+function openModal(item){
+  currentItem = item;
+  modalImg.src = item.img;
+  modalCap.textContent = item.caption;
+  renderQuestions();
+  overlay.classList.add('show');
+}
+rerollAllBtn.addEventListener('click', renderQuestions);
+function closeModal(){ overlay.classList.remove('show'); }
+
+document.getElementById('closeBtn').addEventListener('click', closeModal);
+overlay.addEventListener('click', (e) => { if(e.target === overlay) closeModal(); });
+document.addEventListener('keydown', (e) => { if(e.key === 'Escape') closeModal(); });
+
+const fsBtn = document.getElementById('fsBtn');
+function updateFsBtn(){
+  const isFs = !!document.fullscreenElement;
+  fsBtn.textContent = isFs ? '⛶ Quitter le plein écran' : '⛶ Plein écran';
+}
+fsBtn.addEventListener('click', () => {
+  if(!document.fullscreenElement){
+    document.documentElement.requestFullscreen().catch(() => {
+      window.open(window.location.href, '_blank');
+    });
+  } else {
+    document.exitFullscreen();
+  }
+});
+document.addEventListener('fullscreenchange', updateFsBtn);
+</script>
+</body>
+</html>
