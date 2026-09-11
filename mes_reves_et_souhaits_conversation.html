@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Mes rêves et souhaits</title>
+<style>
+  :root{
+    --cream:#fdf8f0;
+    --card:#ffffff;
+    --turquoise:#1fb8ac;
+    --turquoise-dark:#128f85;
+    --orange:#e07a3f;
+    --orange-light:#f4a26a;
+    --yellow:#f7c948;
+    --ink:#3a3128;
+    --ink-soft:#7a6f63;
+    --shadow: 0 4px 14px rgba(58,49,40,0.08);
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:var(--cream);
+    color:var(--ink);
+    padding:28px 20px 60px;
+  }
+  .wrap{max-width:1100px;margin:0 auto;}
+  header{text-align:center;margin-bottom:28px;}
+  .icon-badge{
+    display:inline-flex;align-items:center;justify-content:center;
+    width:48px;height:48px;border-radius:50%;
+    background:var(--yellow);
+    font-size:24px;margin-bottom:8px;
+  }
+  h1{
+    font-size:2.1rem;margin:4px 0 10px;font-weight:800;
+  }
+  h1 span{color:var(--orange);}
+  .subtitle{
+    display:inline-block;
+    background:var(--card);
+    border:2px solid var(--turquoise);
+    color:var(--turquoise-dark);
+    padding:8px 20px;border-radius:999px;
+    font-weight:600;font-size:1rem;
+  }
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(5,1fr);
+    gap:14px;
+    margin-top:26px;
+  }
+  @media (max-width:900px){ .grid{grid-template-columns:repeat(4,1fr);} }
+  @media (max-width:600px){ .grid{grid-template-columns:repeat(3,1fr);} }
+  .card{
+    background:var(--card);
+    border-radius:16px;
+    padding:10px;
+    text-align:center;
+    cursor:pointer;
+    border:2px solid transparent;
+    box-shadow:var(--shadow);
+    transition:transform .15s ease, border-color .15s ease, box-shadow .15s ease;
+    position:relative;
+  }
+  .card:hover{
+    transform:translateY(-4px) scale(1.03);
+    border-color:var(--turquoise);
+    box-shadow:0 10px 20px rgba(31,184,172,0.18);
+  }
+  .card:active{transform:translateY(-1px) scale(0.99);}
+  .card img{
+    width:100%;aspect-ratio:1/1;object-fit:cover;
+    border-radius:10px;display:block;margin-bottom:8px;
+    background:var(--cream);
+  }
+  .card .cap{font-size:0.82rem;font-weight:600;line-height:1.25;}
+  .badge{
+    position:absolute;top:6px;left:6px;
+    width:22px;height:22px;border-radius:50%;
+    background:var(--orange);color:#fff;font-size:0.72rem;font-weight:800;
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:0 2px 4px rgba(0,0,0,0.15);
+  }
+  .talk-hint{
+    position:absolute;bottom:6px;right:6px;
+    background:var(--turquoise);color:#fff;
+    width:20px;height:20px;border-radius:50%;
+    font-size:0.7rem;display:flex;align-items:center;justify-content:center;
+    opacity:0;transition:opacity .15s ease;
+  }
+  .card:hover .talk-hint{opacity:1;}
+
+  .overlay{
+    position:fixed;inset:0;
+    background:rgba(58,49,40,0.45);
+    display:none;align-items:center;justify-content:center;
+    padding:20px;z-index:50;
+  }
+  .overlay.show{display:flex;}
+  .modal{
+    background:var(--card);
+    border-radius:22px;
+    max-width:480px;width:100%;
+    padding:26px 26px 22px;
+    box-shadow:0 20px 50px rgba(0,0,0,0.25);
+    position:relative;
+    animation:pop .18s ease;
+  }
+  @keyframes pop{from{transform:scale(0.92);opacity:0;}to{transform:scale(1);opacity:1;}}
+  .modal .close{
+    position:absolute;top:14px;right:14px;
+    background:var(--cream);border:none;
+    width:32px;height:32px;border-radius:50%;
+    font-size:1rem;cursor:pointer;color:var(--ink-soft);
+  }
+  .modal .close:hover{background:var(--yellow);color:var(--ink);}
+  .modal-head{display:flex;align-items:center;gap:14px;margin-bottom:16px;}
+  .modal-head img{width:76px;height:76px;object-fit:cover;border-radius:14px;background:var(--cream);}
+  .modal-head .cap{font-size:1.15rem;font-weight:800;}
+  .qlist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px;}
+  .qlist li{
+    background:var(--cream);
+    border-left:4px solid var(--lvl-color, var(--turquoise));
+    padding:10px 14px 10px 14px;border-radius:10px;
+    font-size:0.96rem;
+    display:flex;gap:10px;align-items:baseline;
+  }
+  .qlist li .lvl{
+    flex:0 0 auto;
+    font-size:0.68rem;font-weight:800;letter-spacing:.03em;
+    color:#fff;background:var(--lvl-color, var(--turquoise));
+    padding:2px 7px;border-radius:999px;
+  }
+  .qlist li[data-level="A1"]{--lvl-color:#3fb87f;}
+  .qlist li[data-level="A2"]{--lvl-color:#f0a63a;}
+  .qlist li[data-level="B1"]{--lvl-color:#3a8ee0;}
+  .qlist li[data-level="B2"]{--lvl-color:#d1568a;}
+  .qlist li .qtext{flex:1;}
+  .qlist li .reroll{
+    flex:0 0 auto;
+    background:none;border:none;cursor:pointer;
+    font-size:1rem;line-height:1;opacity:0.5;
+    padding:4px;border-radius:8px;
+    transition:opacity .15s ease, transform .2s ease, background .15s ease;
+  }
+  .qlist li .reroll:hover{opacity:1;transform:rotate(18deg);background:rgba(31,184,172,0.14);}
+  .reroll-all{
+    display:flex;align-items:center;gap:6px;margin:0 0 12px auto;
+    background:var(--cream);border:none;color:var(--turquoise-dark);
+    font-weight:700;font-size:0.8rem;padding:6px 12px;border-radius:999px;
+    cursor:pointer;transition:background .15s ease, color .15s ease;
+  }
+  .reroll-all:hover{background:var(--turquoise);color:#fff;}
+  .astuce{
+    margin-top:22px;text-align:center;
+    color:var(--orange);font-weight:700;font-size:0.9rem;
+  }
+  .fs-btn{
+    position:fixed;top:14px;right:14px;z-index:40;
+    display:flex;align-items:center;gap:6px;
+    background:var(--card);border:2px solid var(--turquoise);color:var(--turquoise-dark);
+    padding:8px 14px;border-radius:999px;font-weight:700;font-size:0.85rem;
+    cursor:pointer;box-shadow:var(--shadow);
+  }
+  .fs-btn:hover{background:var(--turquoise);color:#fff;}
+</style>
+</head>
+<body>
+<button class="fs-btn" id="fsBtn">⛶ Plein écran</button>
+<div class="wrap">
+  <header>
+    <div class="icon-badge">✨</div>
+    <h1>Mes rêves <span>et souhaits</span></h1>
+    <div class="subtitle">« Comment sera ta vie dans le futur ? »</div>
+  </header>
+  <div class="grid" id="grid"></div>
+  <div class="astuce">💡 Clique sur une image pour faire parler l'élève !</div>
+</div>
+
+<div class="overlay" id="overlay">
+  <div class="modal">
+    <button class="close" id="closeBtn">✕</button>
+    <div class="modal-head">
+      <img id="modalImg" src="" alt="">
+      <div class="cap" id="modalCap"></div>
+    </div>
+    <button class="reroll-all" id="rerollAll">🎲 Nouvelles questions</button>
+    <ul class="qlist" id="modalQ"></ul>
+  </div>
+</div>
+
+<script>
+function iconImg(emoji, bg){
+  const svg = `<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><rect width='200' height='200' rx='28' fill='${bg}'/><text x='100' y='120' font-size='96' text-anchor='middle' dominant-baseline='middle'>${emoji}</text></svg>`;
+  return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
+}
+const C1 = '#fdf0dd', C2 = '#fff3c4', C3 = '#d7f0ec', C4 = '#fbdde7', C5 = '#dbe8fb';
+
+const ITEMS = [
+{"caption":"Je voyagerai.","img":iconImg('✈️',C5),"levels":{
+  "A1":["Où voudrais-tu voyager ?","Aimes-tu voyager ?","Voyages-tu souvent ?","Avec qui aimes-tu voyager ?","Préfères-tu l'avion ou le train ?"],
+  "A2":["Quel pays veux-tu visiter en premier ?","Pourquoi veux-tu voyager ?","Combien de temps veux-tu rester ?","Que veux-tu voir là-bas ?","Comment vas-tu économiser pour ce voyage ?"],
+  "B1":["Raconte le voyage de tes rêves en détail.","Explique pourquoi ce pays t'attire.","Décris ce que tu feras pendant ce voyage.","Qu'est-ce qui t'a donné envie de voyager ?","Comment t'organiseras-tu pour ce voyage ?"],
+  "B2":["Penses-tu que voyager change une personne ?","Le tourisme a-t-il des effets négatifs selon toi ?","Comment le voyage élargit-il les perspectives ?","Voyager est-il un luxe ou une nécessité aujourd'hui ?","Que penses-tu du tourisme durable ?"]
+}},
+{"caption":"J'aurai une maison.","img":iconImg('🏡',C1),"levels":{
+  "A1":["Où voudrais-tu habiter ?","Préfères-tu une maison ou un appartement ?","Veux-tu un jardin ?","Aimes-tu la ville ou la campagne ?","Combien de pièces veux-tu ?"],
+  "A2":["Comment sera ta maison idéale ?","Pourquoi choisis-tu cet endroit ?","Avec qui vas-tu vivre ?","Quelle pièce préfères-tu ?","Quand espères-tu avoir cette maison ?"],
+  "B1":["Décris la maison de tes rêves en détail.","Explique comment tu vas économiser pour l'acheter.","Raconte comment tu imagines ta vie là-bas.","Qu'est-ce qui est important pour toi dans un logement ?","Comment choisiras-tu le quartier ?"],
+  "B2":["Penses-tu que la propriété est importante dans la vie ?","Comment le marché immobilier influence-t-il nos choix ?","La maison idéale existe-t-elle vraiment ?","Que penses-tu de l'habitat écologique ?","Louer ou acheter : qu'en penses-tu ?"]
+}},
+{"caption":"Je changerai de travail.","img":iconImg('💼',C2),"levels":{
+  "A1":["Aimes-tu ton travail actuel ?","Que veux-tu faire comme métier ?","Pourquoi veux-tu changer ?","Quand veux-tu changer de travail ?","Est-ce difficile de changer de travail ?"],
+  "A2":["Quel métier t'intéresse le plus ?","Que dois-tu faire pour changer de carrière ?","Quelles compétences te manquent ?","Comment vas-tu chercher ce nouveau travail ?","Qu'est-ce qui te motive à changer ?"],
+  "B1":["Raconte pourquoi ce nouveau métier t'intéresse.","Explique les étapes de ta reconversion.","Décris le travail idéal pour toi.","Quels obstacles pourrais-tu rencontrer ?","Comment te prépares-tu à ce changement ?"],
+  "B2":["Penses-tu qu'il faut aimer son travail pour être heureux ?","Comment le monde du travail a-t-il changé ?","La reconversion professionnelle est-elle plus fréquente aujourd'hui ?","Faut-il privilégier la passion ou la stabilité ?","Quel est le rôle du travail dans une vie équilibrée ?"]
+}},
+{"caption":"J'apprendrai une nouvelle langue.","img":iconImg('🗣️',C3),"levels":{
+  "A1":["Quelle langue veux-tu apprendre ?","Pourquoi cette langue ?","Aimes-tu apprendre des langues ?","Comment vas-tu apprendre ?","As-tu déjà essayé ?"],
+  "A2":["Où vas-tu pratiquer cette langue ?","Combien de temps veux-tu étudier chaque semaine ?","Quelle application ou méthode vas-tu utiliser ?","Quel est ton objectif avec cette langue ?","Connais-tu quelqu'un qui parle cette langue ?"],
+  "B1":["Explique pourquoi cette langue est importante pour toi.","Raconte comment tu vas organiser ton apprentissage.","Décris ce que tu feras quand tu la parleras couramment.","Quelles difficultés attends-tu ?","Comment resteras-tu motivé(e) ?"],
+  "B2":["Penses-tu que parler plusieurs langues change la façon de penser ?","Quel est l'avantage du multilinguisme aujourd'hui ?","L'intelligence artificielle rendra-t-elle inutile d'apprendre des langues ?","Comment la langue influence-t-elle la culture ?","Est-il plus facile d'apprendre une langue jeune ?"]
+}},
+{"caption":"Je déménagerai.","img":iconImg('📦',C4),"levels":{
+  "A1":["Où veux-tu déménager ?","Pourquoi veux-tu déménager ?","Quand penses-tu déménager ?","Aimes-tu déménager ?","Avec qui vas-tu déménager ?"],
+  "A2":["Quelle ville ou pays t'attire ?","Qu'est-ce qui te manquera si tu déménages ?","Comment prépares-tu ce déménagement ?","Qu'emporteras-tu avec toi ?","Qui va t'aider à déménager ?"],
+  "B1":["Explique pourquoi tu veux changer de vie.","Raconte comment tu imagines ta nouvelle vie là-bas.","Décris les avantages et les défis de ce changement.","Comment choisiras-tu ta nouvelle ville ?","Qu'est-ce qui te fait le plus hésiter ?"],
+  "B2":["Penses-tu qu'il faut changer de vie de temps en temps ?","Comment la mobilité a-t-elle changé nos vies ?","Est-il facile de recommencer ailleurs ?","Quel est l'impact d'un déménagement sur l'identité ?","La mondialisation facilite-t-elle ces choix ?"]
+}},
+{"caption":"Je me marierai.","img":iconImg('💍',C5),"levels":{
+  "A1":["Veux-tu te marier un jour ?","Comment imagines-tu ton mariage ?","Préfères-tu un grand ou un petit mariage ?","Où aimerais-tu te marier ?","Quelle saison préfères-tu pour un mariage ?"],
+  "A2":["Comment sera ta cérémonie idéale ?","Qui inviteras-tu ?","Que porteras-tu ce jour-là ?","Quelle tradition aimerais-tu suivre ?","Comment fêteras-tu après la cérémonie ?"],
+  "B1":["Décris le mariage de tes rêves.","Explique ce qui est important pour toi dans un mariage.","Raconte comment tu imagines ta vie de couple après.","Quelles valeurs veux-tu partager avec ton/ta partenaire ?","Comment te prépareras-tu à cet engagement ?"],
+  "B2":["Penses-tu que le mariage est toujours important aujourd'hui ?","Comment la conception du mariage a-t-elle évolué ?","Le mariage est-il nécessaire pour être heureux en couple ?","Que penses-tu des mariages non traditionnels ?","Quel rôle joue la famille dans cette décision ?"]
+}},
+{"caption":"J'aurai des enfants.","img":iconImg('👶',C1),"levels":{
+  "A1":["Veux-tu avoir des enfants ?","Combien d'enfants veux-tu ?","Préfères-tu une fille ou un garçon ?","Aimes-tu les enfants ?","Quand veux-tu avoir des enfants ?"],
+  "A2":["Quel prénom aimerais-tu choisir ?","Comment imagines-tu ta vie de parent ?","Que veux-tu transmettre à tes enfants ?","Où veux-tu élever tes enfants ?","Qui t'aidera avec les enfants ?"],
+  "B1":["Décris comment tu imagines ta famille future.","Explique quelles valeurs tu veux transmettre.","Raconte comment tu prépareras cette nouvelle vie.","Quels sont tes espoirs pour tes enfants ?","Comment équilibreras-tu travail et famille ?"],
+  "B2":["Penses-tu qu'il faut être prêt financièrement pour avoir des enfants ?","Comment la parentalité a-t-elle changé aujourd'hui ?","Quel est le rôle de la société dans l'éducation des enfants ?","Est-il plus difficile d'élever des enfants aujourd'hui qu'avant ?","Que penses-tu de l'équilibre entre carrière et famille ?"]
+}},
+{"caption":"Je finirai mes études.","img":iconImg('🎓',C2),"levels":{
+  "A1":["Qu'est-ce que tu étudies ?","Aimes-tu tes études ?","Quand finiras-tu tes études ?","Que feras-tu après tes études ?","Est-ce difficile pour toi ?"],
+  "A2":["Quel diplôme veux-tu obtenir ?","Pourquoi as-tu choisi ce domaine ?","Que veux-tu faire avec ce diplôme ?","Combien de temps encore dois-tu étudier ?","Qu'est-ce qui te motive à continuer ?"],
+  "B1":["Explique pourquoi ce domaine t'intéresse.","Raconte comment tu organises tes études.","Décris tes projets professionnels après le diplôme.","Quelles difficultés rencontres-tu dans tes études ?","Comment restes-tu motivé(e) jusqu'à la fin ?"],
+  "B2":["Penses-tu que les diplômes garantissent le succès professionnel ?","Comment l'éducation a-t-elle changé ces dernières années ?","Faut-il étudier ce qu'on aime ou ce qui rapporte ?","Quel est le rôle de l'université aujourd'hui ?","L'apprentissage en ligne remplacera-t-il les études classiques ?"]
+}},
+{"caption":"Je gagnerai plus d'argent.","img":iconImg('💰',C3),"levels":{
+  "A1":["Veux-tu gagner plus d'argent ?","Pourquoi veux-tu gagner plus ?","Comment vas-tu gagner plus d'argent ?","Épargnes-tu de l'argent ?","Es-tu satisfait(e) de ton salaire ?"],
+  "A2":["Que feras-tu avec cet argent supplémentaire ?","Comment comptes-tu augmenter tes revenus ?","Préfères-tu épargner ou dépenser ?","As-tu un objectif financier précis ?","Quel est ton plus grand achat rêvé ?"],
+  "B1":["Explique ton plan pour gagner plus d'argent.","Raconte comment tu gères ton budget actuellement.","Décris ce que représente l'argent pour toi.","Quels sacrifices es-tu prêt(e) à faire pour économiser ?","Comment investirais-tu de l'argent supplémentaire ?"],
+  "B2":["Penses-tu que l'argent fait le bonheur ?","Comment la société valorise-t-elle la réussite financière ?","Quel est le juste équilibre entre travail et argent ?","L'inégalité économique est-elle un problème majeur aujourd'hui ?","Que penses-tu du rapport des jeunes générations à l'argent ?"]
+}},
+{"caption":"Je prendrai ma retraite.","img":iconImg('🌴',C4),"levels":{
+  "A1":["Où veux-tu passer ta retraite ?","Que feras-tu pendant ta retraite ?","À quel âge veux-tu prendre ta retraite ?","As-tu hâte de prendre ta retraite ?","Avec qui passeras-tu ta retraite ?"],
+  "A2":["Comment imagines-tu tes journées à la retraite ?","Quel nouveau loisir aimerais-tu commencer ?","Comment te prépares-tu financièrement ?","Voyageras-tu pendant ta retraite ?","Qu'est-ce qui te manquera du travail ?"],
+  "B1":["Décris ta vie idéale de retraité(e).","Explique comment tu prépares cette étape de ta vie.","Raconte ce que tu aimerais accomplir à la retraite.","Quels projets veux-tu réaliser une fois libre de ton temps ?","Comment resteras-tu actif(ve) et en bonne santé ?"],
+  "B2":["Penses-tu que la retraite doit être repensée aujourd'hui ?","Comment le vieillissement de la population change-t-il la société ?","Faut-il travailler plus longtemps selon toi ?","Quel rôle les retraités jouent-ils dans la société ?","La retraite est-elle un droit ou un privilège ?"]
+}},
+{"caption":"Je voudrais voyager autour du monde.","img":iconImg('🌍',C5),"levels":{
+  "A1":["Quels pays veux-tu visiter ?","Combien de temps veux-tu voyager ?","Pars-tu seul(e) ou accompagné(e) ?","Qu'emporteras-tu dans ta valise ?","As-tu peur de voyager loin ?"],
+  "A2":["Quel continent t'attire le plus ?","Comment financeras-tu ce grand voyage ?","Quelle culture veux-tu découvrir ?","Où dormiras-tu pendant ce voyage ?","Qu'est-ce qui te fait le plus envie ?"],
+  "B1":["Raconte l'itinéraire de tes rêves.","Explique pourquoi ce voyage est important pour toi.","Décris ce que tu espères apprendre de ce voyage.","Comment te prépareras-tu avant de partir ?","Quels défis pourrais-tu rencontrer ?"],
+  "B2":["Penses-tu qu'un tour du monde change une personne pour toujours ?","Comment ce genre de voyage influence-t-il notre vision du monde ?","Est-ce un privilège réservé à certains ?","Que penses-tu de l'impact écologique de ces voyages ?","Le tour du monde est-il une fuite ou une découverte de soi ?"]
+}},
+{"caption":"J'aimerais vivre à l'étranger.","img":iconImg('🛬',C1),"levels":{
+  "A1":["Dans quel pays aimerais-tu vivre ?","Pourquoi ce pays t'intéresse ?","Parles-tu la langue de ce pays ?","As-tu déjà vécu à l'étranger ?","Qu'est-ce qui te manquera de chez toi ?"],
+  "A2":["Comment imagines-tu ta vie là-bas ?","Que dois-tu faire pour t'y installer ?","Où habiteras-tu exactement ?","Quel travail chercheras-tu là-bas ?","Connais-tu quelqu'un dans ce pays ?"],
+  "B1":["Explique pourquoi ce pays t'attire tant.","Raconte comment tu te prépares à ce changement.","Décris les défis de vivre loin de ta famille.","Comment t'intégreras-tu dans cette nouvelle culture ?","Qu'espères-tu apprendre de cette expérience ?"],
+  "B2":["Penses-tu que vivre à l'étranger enrichit une personne ?","Comment l'expatriation change-t-elle l'identité culturelle ?","Est-il facile de s'intégrer dans un nouveau pays ?","Quel est l'impact de l'immigration choisie sur une carrière ?","La mondialisation rend-elle ces choix plus faciles aujourd'hui ?"]
+}},
+{"caption":"Je rêve de changer de carrière.","img":iconImg('🚀',C2),"levels":{
+  "A1":["Quelle nouvelle carrière t'intéresse ?","Pourquoi veux-tu changer ?","Aimes-tu ton travail actuel ?","Est-ce risqué de changer ?","Quand veux-tu commencer ce changement ?"],
+  "A2":["Quelles compétences vas-tu devoir apprendre ?","Comment vas-tu financer cette transition ?","Qui peut t'aider dans ce changement ?","Combien de temps prendra cette reconversion ?","Qu'est-ce qui te passionne dans ce nouveau domaine ?"],
+  "B1":["Raconte pourquoi cette nouvelle carrière te fait rêver.","Explique les étapes de ta reconversion professionnelle.","Décris les sacrifices que tu es prêt(e) à faire.","Comment convaincras-tu ton entourage de ce choix ?","Quels sont tes plus grands doutes ?"],
+  "B2":["Penses-tu qu'il n'est jamais trop tard pour changer de carrière ?","Comment le marché du travail encourage-t-il ou freine-t-il la reconversion ?","Faut-il suivre sa passion malgré les risques financiers ?","Quel est le rôle de la peur dans nos choix de carrière ?","Comment la société perçoit-elle les changements de carrière tardifs ?"]
+}},
+{"caption":"J'aimerais être plus courageux(se).","img":iconImg('🦁',C3),"levels":{
+  "A1":["Dans quelle situation veux-tu être plus courageux(se) ?","As-tu peur de quelque chose en particulier ?","Qu'est-ce qui te fait le plus peur ?","Admires-tu les gens courageux ?","Comment te sens-tu quand tu as peur ?"],
+  "A2":["Quelle action courageuse aimerais-tu faire ?","Pourquoi est-ce difficile pour toi ?","Qui t'inspire par son courage ?","Comment pourrais-tu commencer à changer ?","Quel petit pas peux-tu faire aujourd'hui ?"],
+  "B1":["Raconte une situation où tu as manqué de courage.","Explique ce que le courage signifie pour toi.","Décris comment tu pourrais surmonter tes peurs.","Quelles stratégies t'aideraient à être plus confiant(e) ?","Comment le courage pourrait-il changer ta vie ?"],
+  "B2":["Penses-tu que le courage s'apprend ou est inné ?","Comment la société encourage-t-elle ou décourage-t-elle le courage ?","Quel est le lien entre courage et vulnérabilité ?","Le courage est-il toujours une qualité positive ?","Comment distinguer le courage de l'inconscience ?"]
+}},
+{"caption":"Je voudrais apprendre à jouer d'un instrument.","img":iconImg('🎸',C4),"levels":{
+  "A1":["Quel instrument veux-tu apprendre ?","Pourquoi cet instrument ?","As-tu déjà essayé de jouer ?","Aimes-tu la musique ?","Combien de temps veux-tu pratiquer par semaine ?"],
+  "A2":["Comment vas-tu apprendre cet instrument ?","Vas-tu prendre des cours ou apprendre seul(e) ?","Quel style de musique veux-tu jouer ?","Où trouveras-tu le temps de pratiquer ?","Quelle chanson aimerais-tu jouer en premier ?"],
+  "B1":["Explique pourquoi tu veux apprendre cet instrument.","Raconte comment tu organiseras ton apprentissage.","Décris ce que la musique représente pour toi.","Quelles difficultés attends-tu en apprenant ?","Comment resteras-tu motivé(e) sur le long terme ?"],
+  "B2":["Penses-tu que la musique développe d'autres compétences ?","Est-il plus difficile d'apprendre un instrument adulte ?","Quel rôle joue la musique dans le bien-être mental ?","La technologie facilite-t-elle l'apprentissage musical aujourd'hui ?","Que penses-tu de l'importance de la musique dans l'éducation ?"]
+}},
+{"caption":"Ce serait bien d'avoir plus de temps libre.","img":iconImg('⏳',C5),"levels":{
+  "A1":["Que ferais-tu avec plus de temps libre ?","As-tu assez de temps libre en ce moment ?","Qu'est-ce qui prend tout ton temps ?","Aimes-tu ton emploi du temps actuel ?","Que fais-tu pendant ton temps libre ?"],
+  "A2":["Comment pourrais-tu libérer plus de temps ?","Quelle activité aimerais-tu faire plus souvent ?","Qu'est-ce que tu sacrifierais pour avoir plus de temps ?","Avec qui aimerais-tu passer ce temps libre ?","Qu'est-ce qui t'empêche d'avoir plus de temps ?"],
+  "B1":["Explique comment tu géreras ton temps différemment.","Raconte ce que tu ferais avec une journée entièrement libre.","Décris l'équilibre idéal entre travail et vie personnelle.","Quelles priorités changerais-tu dans ta vie ?","Comment le manque de temps affecte-t-il ta vie actuelle ?"],
+  "B2":["Penses-tu que la société valorise trop le travail ?","Comment la semaine de quatre jours changerait-elle nos vies ?","Le temps libre est-il devenu un luxe aujourd'hui ?","Quel est le rôle du repos dans la productivité ?","Comment les nouvelles technologies affectent-elles notre temps libre ?"]
+}},
+{"caption":"J'aimerais rencontrer quelqu'un de spécial.","img":iconImg('💞',C1),"levels":{
+  "A1":["Cherches-tu quelqu'un en ce moment ?","Comment aimerais-tu rencontrer cette personne ?","Qu'est-ce qui est important pour toi chez quelqu'un ?","Es-tu optimiste sur l'amour ?","Crois-tu au destin ?"],
+  "A2":["Quelles qualités recherches-tu chez une personne ?","Où pourrais-tu rencontrer quelqu'un de spécial ?","Qu'est-ce qui te fait craquer chez quelqu'un ?","Comment sais-tu qu'une personne te convient ?","Qu'espères-tu d'une relation ?"],
+  "B1":["Décris la personne idéale pour toi.","Explique ce que tu recherches vraiment dans une relation.","Raconte comment tu imagines votre première rencontre.","Quelles leçons as-tu apprises de tes relations passées ?","Comment sauras-tu que c'est la bonne personne ?"],
+  "B2":["Penses-tu que l'amour véritable existe vraiment ?","Comment les applications de rencontre ont-elles changé l'amour ?","Faut-il chercher l'amour ou le laisser venir ?","Quel est le rôle de la compatibilité dans une relation durable ?","La société met-elle trop de pression sur les relations amoureuses ?"]
+}},
+{"caption":"Je voudrais aider les autres.","img":iconImg('🤝',C2),"levels":{
+  "A1":["Comment aimerais-tu aider les autres ?","Aides-tu déjà quelqu'un en ce moment ?","Qui aimerais-tu aider en premier ?","Aimes-tu faire du bénévolat ?","Pourquoi est-ce important pour toi ?"],
+  "A2":["Quelle cause te touche le plus ?","Comment pourrais-tu t'engager davantage ?","As-tu déjà fait du bénévolat ?","Combien de temps pourrais-tu y consacrer ?","Quel domaine t'intéresse le plus (santé, éducation, environnement) ?"],
+  "B1":["Explique pourquoi aider les autres te tient à cœur.","Raconte une fois où tu as aidé quelqu'un.","Décris le projet humanitaire de tes rêves.","Quel impact aimerais-tu avoir sur ta communauté ?","Comment concilieras-tu cet engagement avec ta vie ?"],
+  "B2":["Penses-tu que chacun a la responsabilité d'aider les autres ?","Comment le bénévolat a-t-il évolué avec internet ?","L'altruisme est-il toujours désintéressé ?","Quel est le rôle des ONG dans la société actuelle ?","Comment mesurer l'impact réel de l'aide humanitaire ?"]
+}},
+{"caption":"J'aimerais être en meilleure santé.","img":iconImg('🧘',C3),"levels":{
+  "A1":["Que fais-tu pour être en bonne santé ?","Manges-tu sainement ?","Fais-tu du sport régulièrement ?","Dors-tu assez ?","Qu'aimerais-tu changer dans tes habitudes ?"],
+  "A2":["Quel changement veux-tu faire en premier ?","Comment vas-tu améliorer ton alimentation ?","Quel sport aimerais-tu pratiquer ?","Comment vas-tu réduire ton stress ?","Qu'est-ce qui t'empêche d'être en meilleure santé ?"],
+  "B1":["Explique ton plan pour améliorer ta santé.","Raconte comment tu comptes changer tes habitudes.","Décris ce que la santé représente pour toi.","Quels obstacles rencontres-tu pour rester en forme ?","Comment resteras-tu motivé(e) sur le long terme ?"],
+  "B2":["Penses-tu que la santé est une responsabilité individuelle ou collective ?","Comment le mode de vie moderne affecte-t-il notre santé ?","Quel est le lien entre santé mentale et santé physique ?","La société valorise-t-elle assez le bien-être ?","Comment les réseaux sociaux influencent-ils notre rapport au corps ?"]
+}},
+{"caption":"Je rêve de réaliser un grand projet.","img":iconImg('🌟',C4),"levels":{
+  "A1":["Quel est ton grand projet ?","Depuis quand rêves-tu de ce projet ?","Pourquoi ce projet est important pour toi ?","As-tu déjà commencé à le préparer ?","Qui pourrait t'aider avec ce projet ?"],
+  "A2":["Quelles étapes dois-tu suivre pour réaliser ce projet ?","Combien de temps cela prendra-t-il ?","De quoi as-tu besoin pour commencer ?","Quels obstacles pourrais-tu rencontrer ?","Comment sauras-tu que tu as réussi ?"],
+  "B1":["Explique en détail ton grand projet.","Raconte comment tu vas le mettre en œuvre étape par étape.","Décris ce que tu ressentiras en l'accomplissant.","Quels sacrifices es-tu prêt(e) à faire pour ce projet ?","Comment surmonteras-tu les échecs éventuels ?"],
+  "B2":["Penses-tu que tout le monde devrait avoir un grand projet de vie ?","Comment la peur de l'échec freine-t-elle nos ambitions ?","Quel est le rôle de la persévérance dans la réussite ?","Faut-il un plan précis ou peut-on avancer intuitivement ?","Comment les grands projets personnels contribuent-ils à la société ?"]
+}}
+];
+
+const grid = document.getElementById('grid');
+ITEMS.forEach((item, i) => {
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.innerHTML = `
+    <span class="badge">${i+1}</span>
+    <span class="talk-hint">💬</span>
+    <img src="${item.img}" alt="${item.caption}">
+    <div class="cap">${item.caption}</div>
+  `;
+  card.addEventListener('click', () => openModal(item));
+  grid.appendChild(card);
+});
+
+const overlay = document.getElementById('overlay');
+const modalImg = document.getElementById('modalImg');
+const modalCap = document.getElementById('modalCap');
+const modalQ = document.getElementById('modalQ');
+
+const rerollAllBtn = document.getElementById('rerollAll');
+const LEVELS = ['A1','A2','B1','B2'];
+let currentItem = null;
+function pickRandom(arr){ return Array.isArray(arr) ? arr[Math.floor(Math.random()*arr.length)] : arr; }
+function renderQuestions(){
+  modalQ.innerHTML = LEVELS.map(lv => `
+    <li data-level="${lv}">
+      <span class="lvl">${lv}</span>
+      <span class="qtext">${pickRandom(currentItem.levels[lv])}</span>
+      <button class="reroll" data-lv="${lv}" title="Une autre question">🎲</button>
+    </li>`).join('');
+  modalQ.querySelectorAll('.reroll').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const lv = btn.dataset.lv;
+      btn.previousElementSibling.textContent = pickRandom(currentItem.levels[lv]);
+    });
+  });
+}
+function openModal(item){
+  currentItem = item;
+  modalImg.src = item.img;
+  modalCap.textContent = item.caption;
+  renderQuestions();
+  overlay.classList.add('show');
+}
+rerollAllBtn.addEventListener('click', renderQuestions);
+function closeModal(){ overlay.classList.remove('show'); }
+
+document.getElementById('closeBtn').addEventListener('click', closeModal);
+overlay.addEventListener('click', (e) => { if(e.target === overlay) closeModal(); });
+document.addEventListener('keydown', (e) => { if(e.key === 'Escape') closeModal(); });
+
+const fsBtn = document.getElementById('fsBtn');
+function updateFsBtn(){
+  const isFs = !!document.fullscreenElement;
+  fsBtn.textContent = isFs ? '⛶ Quitter le plein écran' : '⛶ Plein écran';
+}
+fsBtn.addEventListener('click', () => {
+  if(!document.fullscreenElement){
+    document.documentElement.requestFullscreen().catch(() => {
+      window.open(window.location.href, '_blank');
+    });
+  } else {
+    document.exitFullscreen();
+  }
+});
+document.addEventListener('fullscreenchange', updateFsBtn);
+</script>
+</body>
+</html>
