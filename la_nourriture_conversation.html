@@ -136,6 +136,22 @@
   .qlist li[data-level="A2"]{--lvl-color:#f0a63a;}
   .qlist li[data-level="B1"]{--lvl-color:#3a8ee0;}
   .qlist li[data-level="B2"]{--lvl-color:#d1568a;}
+  .qlist li .qtext{flex:1;}
+  .qlist li .reroll{
+    flex:0 0 auto;
+    background:none;border:none;cursor:pointer;
+    font-size:1rem;line-height:1;opacity:0.5;
+    padding:4px;border-radius:8px;
+    transition:opacity .15s ease, transform .2s ease, background .15s ease;
+  }
+  .qlist li .reroll:hover{opacity:1;transform:rotate(18deg);background:rgba(31,184,172,0.14);}
+  .reroll-all{
+    display:flex;align-items:center;gap:6px;margin:0 0 12px auto;
+    background:var(--cream);border:none;color:var(--turquoise-dark);
+    font-weight:700;font-size:0.8rem;padding:6px 12px;border-radius:999px;
+    cursor:pointer;transition:background .15s ease, color .15s ease;
+  }
+  .reroll-all:hover{background:var(--turquoise);color:#fff;}
   .astuce{
     margin-top:22px;text-align:center;
     color:var(--orange);font-weight:700;font-size:0.9rem;
@@ -169,6 +185,7 @@
       <img id="modalImg" src="" alt="">
       <div class="cap" id="modalCap"></div>
     </div>
+    <button class="reroll-all" id="rerollAll">🎲 Nouvelles questions</button>
     <ul class="qlist" id="modalQ"></ul>
   </div>
 </div>
@@ -195,13 +212,32 @@ const modalImg = document.getElementById('modalImg');
 const modalCap = document.getElementById('modalCap');
 const modalQ = document.getElementById('modalQ');
 
+const rerollAllBtn = document.getElementById('rerollAll');
+const LEVELS = ['A1','A2','B1','B2'];
+let currentItem = null;
+function pickRandom(arr){ return Array.isArray(arr) ? arr[Math.floor(Math.random()*arr.length)] : arr; }
+function renderQuestions(){
+  modalQ.innerHTML = LEVELS.map(lv => `
+    <li data-level="${lv}">
+      <span class="lvl">${lv}</span>
+      <span class="qtext">${pickRandom(currentItem.levels[lv])}</span>
+      <button class="reroll" data-lv="${lv}" title="Une autre question">🎲</button>
+    </li>`).join('');
+  modalQ.querySelectorAll('.reroll').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const lv = btn.dataset.lv;
+      btn.previousElementSibling.textContent = pickRandom(currentItem.levels[lv]);
+    });
+  });
+}
 function openModal(item){
+  currentItem = item;
   modalImg.src = item.img;
   modalCap.textContent = item.caption;
-  const levels = ['A1','A2','B1','B2'];
-  modalQ.innerHTML = levels.map(lv => { const opts = item.levels[lv]; const q = Array.isArray(opts) ? opts[Math.floor(Math.random()*opts.length)] : opts; return `<li data-level="${lv}"><span class="lvl">${lv}</span><span>${q}</span></li>`; }).join('');
+  renderQuestions();
   overlay.classList.add('show');
 }
+rerollAllBtn.addEventListener('click', renderQuestions);
 function closeModal(){ overlay.classList.remove('show'); }
 
 document.getElementById('closeBtn').addEventListener('click', closeModal);
